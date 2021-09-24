@@ -1,0 +1,14 @@
+G:\Repos\HackTools\HackTools\bin\Debug\netcoreapp3.1\HackTools.exe
+G:\Repos\HackTools\HackTools\bin\Debug\netcoreapp3.1\HackTools.deps.json
+G:\Repos\HackTools\HackTools\bin\Debug\netcoreapp3.1\HackTools.runtimeconfig.json
+G:\Repos\HackTools\HackTools\bin\Debug\netcoreapp3.1\HackTools.runtimeconfig.dev.json
+G:\Repos\HackTools\HackTools\bin\Debug\netcoreapp3.1\HackTools.dll
+G:\Repos\HackTools\HackTools\bin\Debug\netcoreapp3.1\HackTools.pdb
+G:\Repos\HackTools\HackTools\obj\Debug\netcoreapp3.1\HackTools.csproj.AssemblyReference.cache
+G:\Repos\HackTools\HackTools\obj\Debug\netcoreapp3.1\HackTools.GeneratedMSBuildEditorConfig.editorconfig
+G:\Repos\HackTools\HackTools\obj\Debug\netcoreapp3.1\HackTools.AssemblyInfoInputs.cache
+G:\Repos\HackTools\HackTools\obj\Debug\netcoreapp3.1\HackTools.AssemblyInfo.cs
+G:\Repos\HackTools\HackTools\obj\Debug\netcoreapp3.1\HackTools.csproj.CoreCompileInputs.cache
+G:\Repos\HackTools\HackTools\obj\Debug\netcoreapp3.1\HackTools.dll
+G:\Repos\HackTools\HackTools\obj\Debug\netcoreapp3.1\HackTools.pdb
+G:\Repos\HackTools\HackTools\obj\Debug\netcoreapp3.1\HackTools.genruntimeconfig.cache
