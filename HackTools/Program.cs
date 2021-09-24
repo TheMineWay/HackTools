@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace HackTools
 {
@@ -6,8 +7,17 @@ namespace HackTools
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            Console.ReadLine();
+            List<Menu<int>.MenuItem> items = new List<Menu<int>.MenuItem>();
+            for(int i = 0; i < 15; i++)
+            {
+                items.Add(new Menu<int>.MenuItem($"Opt {i}",i));
+            }
+            Menu<int> menu = new Menu<int>
+            (
+                title: "Test Menu",
+                items: items.ToArray()
+            );
+            menu.DisplayMenu();
         }
     }
 }
