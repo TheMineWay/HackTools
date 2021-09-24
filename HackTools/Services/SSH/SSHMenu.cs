@@ -23,7 +23,16 @@ namespace HackTools
                 Options option = menu.DisplayMenu();
                 if (option == Options.exit) return;
 
+                switch(option)
+                {
+                    case Options.connect: Connect(); break;
+                }
             } while (true);
+        }
+
+        public static void Connect()
+        {
+            SSHConnection connection = new SSHConnection();
         }
     }
 }

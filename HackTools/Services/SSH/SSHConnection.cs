@@ -13,6 +13,20 @@ namespace HackTools
 
         SshClient client;
 
+        public SSHConnection()
+        {
+            // UI
+            Console.Clear();
+            Printer.Print("&cyan;\tDestination: ", newLine: false);
+            string ip;
+            do
+            {
+                ip = Console.ReadLine();
+                Console.Clear();
+                Printer.Print("&blue;\t[-] Checking");
+            } while (true);
+        }
+
         public SSHConnection(string username, string password, string ip, string name = "SSH Connection")
         {
             this.username = username;
@@ -22,8 +36,6 @@ namespace HackTools
 
         public void Connect()
         {
-            //ConnectionInfo connectionInfo = new ConnectionInfo(ip, username, new PasswordAuthenticationMethod(username,password));
-            //client = new SftpClient(connectionInfo);
             client = new SshClient(ip,username,password);
             client.Connect();
         }

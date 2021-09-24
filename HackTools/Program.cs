@@ -7,6 +7,12 @@ namespace HackTools
     {
         static void Main(string[] args)
         {
+            LoadingUI loadingUI = new LoadingUI("Cargando");
+            while (true)
+            {
+                System.Threading.Thread.Sleep(200);
+                loadingUI.Print();
+            }
             Menu<ScreenOption>.MenuItem[] items = new Menu<ScreenOption>.MenuItem[] {
                 new Menu<ScreenOption>.MenuItem("SSH", new SSHMenu())
             };
