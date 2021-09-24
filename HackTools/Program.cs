@@ -7,17 +7,16 @@ namespace HackTools
     {
         static void Main(string[] args)
         {
-            List<Menu<int>.MenuItem> items = new List<Menu<int>.MenuItem>();
-            for(int i = 0; i < 130; i++)
+            Menu<ScreenOption>.MenuItem[] items = new Menu<ScreenOption>.MenuItem[] {
+                new Menu<ScreenOption>.MenuItem("SSH", new SSHMenu())
+            };
+            Menu<ScreenOption> menu = new Menu<ScreenOption>(title:"Menu", items: items);
+            do
             {
-                items.Add(new Menu<int>.MenuItem($"Opt {i}",i));
-            }
-            Menu<int> menu = new Menu<int>
-            (
-                title: "Test Menu",
-                items: items.ToArray()
-            );
-            menu.DisplayMenu();
+                ScreenOption option = menu.DisplayMenu();
+                if (option == null) return;
+                option.Open();
+            } while (true);
         }
     }
 }

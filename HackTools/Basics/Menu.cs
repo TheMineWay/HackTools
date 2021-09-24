@@ -50,7 +50,7 @@ namespace HackTools
             void Display()
             {
                 Console.Clear();
-                Console.WriteLine($"Page {(line / perPage) + 1}\n");
+                Printer.Print($"&white;{Printer.Fill(" ", cursor.Length + 1)}{title} - &red;Page {(line / perPage) + 1}\n");
                 MenuItem[] currentItems = GetItems();
                 int c = perPage * (int)(line / perPage);
                 foreach(MenuItem item in currentItems)
@@ -89,5 +89,9 @@ namespace HackTools
 
             public int GetPage(int maxPage) => page > maxPage ? maxPage : (page < 0 ? 0 : page);
         }
+    }
+    public abstract class ScreenOption
+    {
+        public abstract void Open();
     }
 }

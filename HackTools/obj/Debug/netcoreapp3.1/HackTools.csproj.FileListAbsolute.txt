@@ -12,3 +12,6 @@ G:\Repos\HackTools\HackTools\obj\Debug\netcoreapp3.1\HackTools.csproj.CoreCompil
 G:\Repos\HackTools\HackTools\obj\Debug\netcoreapp3.1\HackTools.dll
 G:\Repos\HackTools\HackTools\obj\Debug\netcoreapp3.1\HackTools.pdb
 G:\Repos\HackTools\HackTools\obj\Debug\netcoreapp3.1\HackTools.genruntimeconfig.cache
+G:\Repos\HackTools\HackTools\bin\Debug\netcoreapp3.1\Renci.SshNet.dll
+G:\Repos\HackTools\HackTools\bin\Debug\netcoreapp3.1\SshNet.Security.Cryptography.dll
+G:\Repos\HackTools\HackTools\obj\Debug\netcoreapp3.1\HackTools.csproj.CopyComplete
