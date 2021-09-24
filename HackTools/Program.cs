@@ -8,7 +8,7 @@ namespace HackTools
         static void Main(string[] args)
         {
             List<Menu<int>.MenuItem> items = new List<Menu<int>.MenuItem>();
-            for(int i = 0; i < 15; i++)
+            for(int i = 0; i < 130; i++)
             {
                 items.Add(new Menu<int>.MenuItem($"Opt {i}",i));
             }

@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "Upgz8d2a0QeqPwNOZKUFX0R/0o59aBsIc9sEFxN4MwcfZ/Gj5xFXuQqk73xhGFAhAJUDJ9ajJjWVWN9/R5/FPg==",
+  "dgSpecHash": "qhBXglOltlWVj9P2EHCvj4KPZ0UzJ8mVXadDwonn7Y+nk3ihtKjxRYgg9Ex3dPzINc4XYEmrJhLbZB7+uadmNg==",
   "success": true,
   "projectFilePath": "G:\\Repos\\HackTools\\HackTools\\HackTools.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\joelc\\.nuget\\packages\\ssh.net\\2020.0.1\\ssh.net.2020.0.1.nupkg.sha512",
+    "C:\\Users\\joelc\\.nuget\\packages\\sshnet.security.cryptography\\1.3.0\\sshnet.security.cryptography.1.3.0.nupkg.sha512"
+  ],
   "logs": []
 }
