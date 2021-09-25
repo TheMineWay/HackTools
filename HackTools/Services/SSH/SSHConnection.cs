@@ -107,8 +107,15 @@ namespace HackTools
         {
             if (client == null) return "[!] No connection";
             SshCommand com = client.CreateCommand(command);
-            com.Execute();
-            return com.Result;
+            try
+            {
+                com.Execute();
+                return com.Result;
+            } catch(Exception e)
+            {
+                Printer.Print("&red; Missing client");
+                return "";
+            }
         }
     }
 }
