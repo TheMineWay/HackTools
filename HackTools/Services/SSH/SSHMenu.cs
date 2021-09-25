@@ -32,8 +32,24 @@ namespace HackTools
 
         public static void Connect()
         {
+            string title = Console.Title;
             SSHConnection connection = new SSHConnection();
             if (!connection.ConnectWithUI()) return;
+            if (!connection.Connect()) return;
+            Console.Clear();
+            Console.Title = $"[SSH]: Connected to {connection.ip}";
+            do
+            {
+                string command = Console.ReadLine();
+                if (command == "clear") Console.Clear();
+                else if (command == "exit") break;
+                else
+                {
+                    string result = connection.Run(command);
+                    Console.WriteLine(result);
+                }
+            } while (true);
+            Console.Title = title;
         }
     }
 }

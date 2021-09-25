@@ -27,10 +27,18 @@ namespace HackTools
             this.ip = ip;
         }
 
-        public void Connect()
+        public bool Connect()
         {
-            client = new SshClient(ip,username,password);
-            client.Connect();
+            try
+            {
+                client = new SshClient(ip, username, password);
+                client.Connect();
+                return true;
+            } catch (Exception e)
+            {
+                UIComponents.Error($"Cannot connect to {ip} with:\n\tUsername: {username}\n\tPassword: {Printer.Fill("*",password.Length)}");
+                return false;
+            }
         }
 
         public bool ConnectWithUI()

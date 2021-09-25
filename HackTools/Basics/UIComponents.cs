@@ -18,4 +18,21 @@ namespace HackTools
             return queue[index];
         }
     }
+
+    class UIComponents
+    {
+        public static void Error(string title, bool clear = true)
+        {
+            if(clear) Console.Clear();
+            Printer.Print($"$dred; [!]: &red;{title}");
+            PressAnyKey();
+            if (clear) Console.Clear();
+        }
+
+        public static void PressAnyKey()
+        {
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+        }
+    }
 }
