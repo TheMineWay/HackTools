@@ -15,15 +15,34 @@ namespace HackTools
 
         SshClient client;
 
-        public SSHConnection()
+        public SSHConnection(bool connectWithUI = false)
         {
-            // UI
+            if (connectWithUI) ConnectWithUI();
+        }
+
+        public SSHConnection(string username, string password, string ip, string name = "SSH Connection")
+        {
+            this.username = username;
+            this.password = password;
+            this.ip = ip;
+        }
+
+        public void Connect()
+        {
+            client = new SshClient(ip,username,password);
+            client.Connect();
+        }
+
+        public bool ConnectWithUI()
+        {
             Console.Clear();
+            // UI
             string ip;
             do
             {
-                Printer.Print("&cyan;\tDestination: ", newLine: false);
+                Printer.Print("&cyan;\tDestination (empty to exit): ", newLine: false);
                 ip = Console.ReadLine();
+                if (ip == "") return false;
                 Console.Clear();
                 LoadingUI loading = new LoadingUI($"Checking IP ({ip})");
                 PingReply reply = null;
@@ -39,31 +58,41 @@ namespace HackTools
                     loading.Print();
                     if (times >= 20) break;
                 }
-                if(times < 20)
+                if (times < 20)
                 {
                     if (reply.Status == IPStatus.Success)
                     {
                         Printer.Print("&green; Successful IP check");
-                        break;
+                        do
+                        {
+                            Console.Clear();
+                            string username = InputField.Text(true);
+                            if (username == "")
+                            {
+                                Console.Clear();
+                                break;
+                            }
+
+                            do
+                            {
+                                Console.Clear();
+                                string password = InputField.Password(true);
+                                if (password == "") break;
+
+                                // Store credentials
+                                this.ip = ip;
+                                this.password = password;
+                                this.username = username;
+                                return true;
+                            } while (true);
+                        } while (true);
                     }
+                } else
+                {
+                    Console.Clear();
+                    Printer.Print("&red; [!] The IP check has failed");
                 }
-                Printer.Print("&red; [!] The IP check has failed");
             } while (true);
-            // Credentials
-
-        }
-
-        public SSHConnection(string username, string password, string ip, string name = "SSH Connection")
-        {
-            this.username = username;
-            this.password = password;
-            this.ip = ip;
-        }
-
-        public void Connect()
-        {
-            client = new SshClient(ip,username,password);
-            client.Connect();
         }
 
         public string Run(string command)

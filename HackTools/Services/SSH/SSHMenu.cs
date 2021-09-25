@@ -33,6 +33,7 @@ namespace HackTools
         public static void Connect()
         {
             SSHConnection connection = new SSHConnection();
+            if (!connection.ConnectWithUI()) return;
         }
     }
 }
