@@ -9,13 +9,15 @@ namespace HackTools
         enum Options
         {
             exit,
-            connect
+            connect,
+            attack
         }
         public override void Open()
         {
             Menu<Options>.MenuItem[] items = new Menu<Options>.MenuItem[]
             {
-                new Menu<Options>.MenuItem("Connect", Options.connect)
+                new Menu<Options>.MenuItem("Connect", Options.connect),
+                new Menu<Options>.MenuItem("Attack", Options.attack)
             };
             Menu<Options> menu = new Menu<Options>(title: "SSH Service", items: items);
             do
@@ -26,6 +28,7 @@ namespace HackTools
                 switch(option)
                 {
                     case Options.connect: Connect(); break;
+                    case Options.attack: Attack(); break;
                 }
             } while (true);
         }
@@ -50,6 +53,12 @@ namespace HackTools
                 }
             } while (true);
             Console.Title = title;
+        }
+
+        public static void Attack()
+        {
+            
+            UIComponents.PressAnyKey();
         }
     }
 }

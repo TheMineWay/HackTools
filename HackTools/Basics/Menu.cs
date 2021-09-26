@@ -25,6 +25,7 @@ namespace HackTools
             int line = 0;
             do {
                 perPage = Console.WindowHeight - 5;
+                if (perPage <= 0) perPage = 1;
                 Display();
 
                 ConsoleKey key = Console.ReadKey().Key;
