@@ -8,6 +8,9 @@ namespace HackTools
     {
         List<T> items = new List<T>();
         public T[] GetItems() => items.ToArray();
+        public void AddRange(T[] range) => items.AddRange(range);
+        public void Add(T val) => items.Add(val);
+        public void Set(T[] values) => items = new List<T>(values);
 
         // Displays the modification UI
         public void Modify()
@@ -26,7 +29,7 @@ namespace HackTools
                 Console.WriteLine(Printer.Fill("-", Console.BufferWidth));
 
                 // Actions
-                Printer.Print("&cyan;A: &white;Add item (top)\t&cyan;R: &white;Generate range\t&cyan;Esc: &white;Save and exit\n&cyan;Z: &white;Add item (bottom)\t&cyan;D: &white;Delete");
+                Printer.Print("&cyan;A: &white;Add item (top)\t&cyan;Esc: &white;Save and exit\n&cyan;Z: &white;Add item (bottom)\t&cyan;D: &white;Delete");
 
                 ConsoleKey key = Console.ReadKey().Key;
                 T newItem;

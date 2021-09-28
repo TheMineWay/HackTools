@@ -12,11 +12,16 @@ namespace HackTools
             string newIp = Console.ReadLine();
             if(newIp.Length > 0)
             {
-                SetValue(newIp);
-                name = newIp;
+                SetBoth(newIp);
                 return true;
             }
             return false;
+        }
+
+        public void SetBoth(string val)
+        {
+            SetName(val);
+            SetValue(val);
         }
     }
 }

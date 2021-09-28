@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
+using System.Linq;
 
 namespace HackTools
 {
@@ -11,6 +13,12 @@ namespace HackTools
             exit,
             connect,
             attack
+        }
+        enum AttackOptions
+        {
+            exit,
+            editList,
+            generateRange
         }
         public override void Open()
         {
@@ -57,8 +65,56 @@ namespace HackTools
 
         public static void Attack()
         {
-            foreach (string ip in IPWorker.GetRange("192.168.0.0", "192.168.255.255")) Console.WriteLine(ip);
-            UIComponents.PressAnyKey();
+            ListGenerator<IPAndNamesList, string> listGenerator = new ListGenerator<IPAndNamesList, string>();
+            Menu<AttackOptions>.MenuItem[] items = new Menu<AttackOptions>.MenuItem[] {
+                new Menu<AttackOptions>.MenuItem("Edit targets list", AttackOptions.editList),
+                new Menu<AttackOptions>.MenuItem("Generate targets range (by IP)", AttackOptions.generateRange)
+            };
+            do
+            {
+                Menu<AttackOptions> menu = new Menu<AttackOptions>(title: "Targets", items: items);
+                AttackOptions option = menu.DisplayMenu();
+                switch(option)
+                {
+                    case AttackOptions.editList: listGenerator.Modify(); break;
+                    case AttackOptions.generateRange: AddIPRange(); break;
+                    default: return;
+                }
+            } while (true);
+
+            void AddIPRange()
+            {
+                Console.Clear();
+                string startIp = "", endIp = "";
+                do
+                {
+                    Printer.Print("&cyan;Starting IP:&white; ");
+                    startIp = Console.ReadLine();
+                    if (startIp.Length <= 0) return;
+                    do
+                    {
+                        Printer.Print("&cyan;Ending IP:&white; ");
+                        endIp = Console.ReadLine();
+                        if (endIp.Length <= 0) break;
+                        try
+                        {
+                            // Generate the range and convert it
+                            listGenerator.AddRange(
+                                IPWorker.GetRange(startIp, endIp).Select((e) => {
+                                    IPAndNamesList newIp = new IPAndNamesList();
+                                    newIp.SetBoth(e);
+                                    return newIp;
+                                }).ToArray());
+                            return;
+                        } catch(Exception e)
+                        {
+                            UIComponents.Error($"Invalid IP range ({startIp} - {endIp})");
+                            return;
+                        }
+                    } while (true);
+                    Console.Clear();
+                } while (true);
+            }
         }
     }
 }
