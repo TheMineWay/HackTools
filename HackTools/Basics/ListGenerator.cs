@@ -13,20 +13,22 @@ namespace HackTools
         public void Modify()
         {
             int index = 0;
-            int perPage = 10;
+            int perPage;
+            int page;
             do
             {
                 Console.Clear();
+                perPage = Console.WindowHeight - 8 >= 3 ? Console.WindowHeight - 8 : 3;
+                page = (index / perPage);
                 Display();
 
                 Console.WriteLine();
                 Console.WriteLine(Printer.Fill("-", Console.BufferWidth));
 
                 // Actions
-                Printer.Print("&cyan;A: &white;Add item (top)\t&cyan;R: &white;Generate range\n&cyan;Z: &white;Add item (bottom)\t&cyan;D: &white;Delete");
+                Printer.Print("&cyan;A: &white;Add item (top)\t&cyan;R: &white;Generate range\t&cyan;Esc: &white;Save and exit\n&cyan;Z: &white;Add item (bottom)\t&cyan;D: &white;Delete");
 
                 ConsoleKey key = Console.ReadKey().Key;
-                int page = index / perPage;
                 T newItem;
                 switch (key)
                 {
@@ -53,9 +55,10 @@ namespace HackTools
                         Printer.Print($"&red;\nDo you want to delete this item? (&white;{items[index].GetName()}&red;) ", newLine: false);
                         if (UIComponents.GetYesNo()) items.RemoveAt(index);
                         break;
+                    case ConsoleKey.Escape: return;
                 }
 
-                if (index < 0) index = perPage < items.Count ? perPage : items.Count - 1;
+                if (index < 0) index = items.Count - 1;
                 if (index >= items.Count) index = 0;
             } while (true);
 
@@ -66,7 +69,7 @@ namespace HackTools
                     Printer.Print("&cyan;-- The list is empty --");
                     return;
                 }
-                for(int i = 0; i < items.Count; i++)
+                for(int i = perPage * page; i < (perPage + (perPage * page)) && i < items.Count; i++)
                 {
                     Printer.Print($"{(index == i ? "&red;" : "&white;")}\n {items[i].GetName()}", newLine: false);
                 }

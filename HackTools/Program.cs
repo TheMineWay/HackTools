@@ -7,6 +7,7 @@ namespace HackTools
     {
         static void Main(string[] args)
         {
+            Console.Title = "Hack Tools - By TheMineWay";
             ListGenerator<IPAndNamesList, string> listGenerator = new ListGenerator<IPAndNamesList, string>();
             listGenerator.Modify();
             /*Menu<ScreenOption>.MenuItem[] items = new Menu<ScreenOption>.MenuItem[] {
