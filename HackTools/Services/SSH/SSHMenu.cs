@@ -57,7 +57,7 @@ namespace HackTools
 
         public static void Attack()
         {
-            
+            foreach (string ip in IPWorker.GetRange("192.168.0.0", "192.168.255.255")) Console.WriteLine(ip);
             UIComponents.PressAnyKey();
         }
     }

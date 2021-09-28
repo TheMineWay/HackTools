@@ -22,4 +22,22 @@ namespace HackTools
             return ips.ToArray();
         }
     }
+
+    class IPList : ListItem<IPAddress>
+    {
+        public override bool AskForValue()
+        {
+            Printer.Print("&cyan;\nNew IP:&white; ", newLine: false);
+            string newIp = Console.ReadLine();
+            try
+            {
+                SetValue(IPAddress.Parse(newIp));
+                name = newIp;
+                return newIp.Length > 0;
+            } catch(Exception e)
+            {
+                return false;
+            }
+        }
+    }
 }
