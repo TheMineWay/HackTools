@@ -70,15 +70,17 @@ namespace HackTools
                 new Menu<AttackOptions>.MenuItem("Edit targets list", AttackOptions.editList),
                 new Menu<AttackOptions>.MenuItem("Generate targets range (by IP)", AttackOptions.generateRange)
             };
+            Menu<AttackOptions> menu = new Menu<AttackOptions>(title: "Targets", items: items);
             do
             {
-                Menu<AttackOptions> menu = new Menu<AttackOptions>(title: "Targets", items: items);
                 AttackOptions option = menu.DisplayMenu();
                 switch(option)
                 {
                     case AttackOptions.editList: listGenerator.Modify(); break;
                     case AttackOptions.generateRange: AddIPRange(); break;
-                    default: return;
+                    default:
+                        listGenerator = null;
+                        return;
                 }
             } while (true);
 
@@ -88,12 +90,12 @@ namespace HackTools
                 string startIp = "", endIp = "";
                 do
                 {
-                    Printer.Print("&cyan;Starting IP:&white; ");
+                    Printer.Print("&cyan;\nStarting IP:&white; ", newLine: false);
                     startIp = Console.ReadLine();
                     if (startIp.Length <= 0) return;
                     do
                     {
-                        Printer.Print("&cyan;Ending IP:&white; ");
+                        Printer.Print("&cyan;\nEnding IP:&white; ", newLine: false);
                         endIp = Console.ReadLine();
                         if (endIp.Length <= 0) break;
                         try

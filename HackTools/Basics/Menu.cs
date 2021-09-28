@@ -17,12 +17,12 @@ namespace HackTools
         int perPage = 10; // Lines per page
         public string title;
         private MenuItem[] items;
+        int line = 0;
 
         // Behaviour
 
         public T DisplayMenu()
         {
-            int line = 0;
             do {
                 perPage = Console.WindowHeight - 5;
                 if (perPage <= 0) perPage = 1;
@@ -51,7 +51,7 @@ namespace HackTools
             void Display()
             {
                 Console.Clear();
-                Printer.Print($"&white;{Printer.Fill(" ", cursor.Length + 1)}{title} - &red;Page {(line / perPage) + 1}\n");
+                Printer.Print($"&white;\n{Printer.Fill(" ", cursor.Length + 1)}{title} - &red;Page {(line / perPage) + 1}\n");
                 MenuItem[] currentItems = GetItems();
                 int c = perPage * (int)(line / perPage);
                 foreach(MenuItem item in currentItems)
