@@ -7,6 +7,7 @@ namespace HackTools
     class ListGenerator<T, K> where T : ListItem<K>, new()
     {
         List<T> items = new List<T>();
+        public T[] GetItems() => items.ToArray();
 
         // Displays the modification UI
         public void Modify()
@@ -22,17 +23,35 @@ namespace HackTools
                 Console.WriteLine(Printer.Fill("-", Console.BufferWidth));
 
                 // Actions
-                Printer.Print("&cyan;A: &white;Add item\t&cyan;R: &white;Generate range");
+                Printer.Print("&cyan;A: &white;Add item (top)\t&cyan;R: &white;Generate range\n&cyan;Z: &white;Add item (bottom)\t&cyan;D: &white;Delete");
 
                 ConsoleKey key = Console.ReadKey().Key;
                 int page = index / perPage;
-                switch(key)
+                T newItem;
+                switch (key)
                 {
                     case ConsoleKey.UpArrow: index--; break;
                     case ConsoleKey.DownArrow: index++; break;
                     case ConsoleKey.A:
-                        T newItem = new T();
-                        if (newItem.AskForValue()) items.Add(newItem);
+                        newItem = new T();
+                        if (newItem.AskForValue()) items.Insert(index,newItem);
+                        break;
+                    case ConsoleKey.Z:
+                        newItem = new T();
+                        if (newItem.AskForValue())
+                        {
+                            if (items.Count == 0)
+                            {
+                                items.Add(newItem);
+                                break;
+                            }
+                            items.Insert(index >= items.Count ? items.Count - 1 : index + 1, newItem);
+                        }
+                        break;
+                    case ConsoleKey.D:
+                        if (items.Count == 0) break;
+                        Printer.Print($"&red;\nDo you want to delete this item? (&white;{items[index].GetName()}&red;) ", newLine: false);
+                        if (UIComponents.GetYesNo()) items.RemoveAt(index);
                         break;
                 }
 

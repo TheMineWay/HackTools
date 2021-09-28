@@ -34,5 +34,17 @@ namespace HackTools
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
         }
+
+        public static bool GetYesNo(bool clearOnFail = false, bool printOptions = true)
+        {
+            do
+            {
+                if (printOptions) Console.Write("(Y/N) ");
+                ConsoleKey res = Console.ReadKey().Key;
+                if (res == ConsoleKey.Y) return true;
+                if (res == ConsoleKey.N) return false;
+                if (clearOnFail) Console.Clear();
+            } while (true);
+        }
     }
 }

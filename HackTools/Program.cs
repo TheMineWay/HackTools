@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 
 namespace HackTools
 {
@@ -8,7 +7,7 @@ namespace HackTools
     {
         static void Main(string[] args)
         {
-            ListGenerator<IPList, IPAddress> listGenerator = new ListGenerator<IPList, IPAddress>();
+            ListGenerator<IPAndNamesList, string> listGenerator = new ListGenerator<IPAndNamesList, string>();
             listGenerator.Modify();
             /*Menu<ScreenOption>.MenuItem[] items = new Menu<ScreenOption>.MenuItem[] {
                 new Menu<ScreenOption>.MenuItem("SSH", new SSHMenu())
