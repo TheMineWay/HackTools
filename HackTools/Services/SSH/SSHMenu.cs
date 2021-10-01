@@ -79,7 +79,8 @@ namespace HackTools
                     case AttackOptions.editList: listGenerator.Modify(); break;
                     case AttackOptions.generateRange: AddIPRange(); break;
                     default:
-                        listGenerator = null;
+                        listGenerator.Clear();
+                        GC.Collect(); // Forces to clear memory
                         return;
                 }
             } while (true);
