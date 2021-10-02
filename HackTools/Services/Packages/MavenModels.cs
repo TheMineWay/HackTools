@@ -52,6 +52,11 @@ namespace HackTools
         {
             if(IsAvailable())
             {
+                Console.Clear();
+
+                Console.WriteLine(MavenPackageInfo.GetFromFile(name).description);
+
+                UIComponents.PressAnyKey();
                 return false;
             } else
             {
@@ -68,29 +73,11 @@ namespace HackTools
 
         public void Download()
         {
-            WebClient client = new WebClient();
-
             Directory.CreateDirectory($@"{ProgramInfo.programDir}/packages/{name}");
 
-            if (File.Exists($@"{ProgramInfo.programDir}/packages/{name}/package.info.json")) File.Delete($@"{ProgramInfo.programDir}/packages/{name}/package.info.json");
-            
-            Stream packageInfoStream = client.OpenRead($"{url}/v_info.json");
-            using(FileStream fs = new FileStream($@"{ProgramInfo.programDir}/packages/{name}/package.info.json", FileMode.Create))
-            {
-                packageInfoStream.CopyTo(fs);
-                fs.Close();
-            }
-            packageInfoStream.Close();
+            Networker.DownloadToFile($"{url}/v_info.json", $@"{ProgramInfo.programDir}/packages/{name}/package.info.json");
 
-            if (File.Exists($@"{ProgramInfo.programDir}/packages/{name}/{MavenPackageInfo.GetFromFile(name).datafile}")) File.Delete($@"{ProgramInfo.programDir}/packages/{name}/{MavenPackageInfo.GetFromFile(name).datafile}");
-
-            Stream dataFile = client.OpenRead($"{url}/{MavenPackageInfo.GetFromFile(name).datafile}");
-            using(FileStream fs = new FileStream($@"{ProgramInfo.programDir}/packages/{name}/{MavenPackageInfo.GetFromFile(name).datafile}", FileMode.Create))
-            {
-                dataFile.CopyTo(fs);
-                fs.Close();
-            }
-            dataFile.Close();
+            Networker.DownloadToFile($"{url}/{MavenPackageInfo.GetFromFile(name).datafile}", $@"{ProgramInfo.programDir}/packages/{name}/{MavenPackageInfo.GetFromFile(name).datafile}");
         }
     }
     [Serializable]
@@ -100,5 +87,11 @@ namespace HackTools
 
         public string datatype;
         public string datafile;
+        public string description;
+    }
+    class MavenPackageDetailsModel // package_info.json
+    {
+        public string author;
+        public string[] versions;
     }
 }
