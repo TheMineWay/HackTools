@@ -59,14 +59,15 @@ namespace HackTools
         public override void Open()
         {
             // Read packages index
-            MavenIndexModel indexModel = MavenIndexModel.Get();
+            MavenIndexModel indexModel = MavenIndexModel.GetFromFile();
 
-            Menu<string>.MenuItem[] items = indexModel.packages.Select((p) => new Menu<string>.MenuItem($"{p.name} - {p.last_version}",$"https://maven.themineway.org/repository/hacktools/packages/{p.name}/{p.last_version}")).ToArray();
-            Menu<string> menu = new Menu<string>(title: "Available packages", items: items);
+            Menu<MavenPackageModel>.MenuItem[] items = indexModel.packages.Select((p) => new Menu<MavenPackageModel>.MenuItem($"{p.name} ({p.last_version}) {(p.IsAvailable() ? "" : "[DOWNLOAD]")}", p)).ToArray();
+            Menu<MavenPackageModel> menu = new Menu<MavenPackageModel>(title: "Available packages", items: items);
             do
             {
-                string url = menu.DisplayMenu();
-                if (url == null) return;
+                MavenPackageModel mavenPackage = menu.DisplayMenu();
+                if (mavenPackage == null) return;
+                mavenPackage.View();
             } while (true);
         }
     }

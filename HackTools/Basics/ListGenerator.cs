@@ -61,9 +61,7 @@ namespace HackTools
                         Printer.Print($"&red;\n Do you want to delete this item? (&white;{items[index].GetName()}&red;) ", newLine: false);
                         if (UIComponents.GetYesNo()) items.RemoveAt(index);
                         break;
-                    case ConsoleKey.Escape:
-                        items.Clear();
-                        return;
+                    case ConsoleKey.Escape: return;
                 }
 
                 if (index < 0) index = items.Count - 1;
