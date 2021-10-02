@@ -45,6 +45,8 @@ namespace HackTools
 
             File.WriteAllText($@"{ProgramInfo.programDir}/maven.index.json", data.Result); // <-- Save the package
 
+            MavenIndexModel.CheckVersion(); // <-- Check if there is a newer version of the program
+
             Console.Clear();
             Printer.Print("&green;\nThe package index has been fetched!");
             GC.Collect();
@@ -57,7 +59,7 @@ namespace HackTools
         public override void Open()
         {
             // Read packages index
-            MavenIndexModel indexModel = JsonConvert.DeserializeObject<MavenIndexModel>(File.ReadAllText($@"{ProgramInfo.programDir}/maven.index.json"));
+            MavenIndexModel indexModel = MavenIndexModel.Get();
 
             Menu<string>.MenuItem[] items = indexModel.packages.Select((p) => new Menu<string>.MenuItem($"{p.name} - {p.last_version}",$"https://maven.themineway.org/repository/hacktools/packages/{p.name}/{p.last_version}")).ToArray();
             Menu<string> menu = new Menu<string>(title: "Available packages", items: items);
