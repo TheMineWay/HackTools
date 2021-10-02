@@ -61,5 +61,8 @@ namespace HackTools
     {
         public override bool AskForValue() => false;
         public override string GetName() => $"{GetValue().ip} | {GetValue().username} | {GetValue().password}";
+        public override string GetExportFormat() => $"{ToHex(GetValue().ip)};{ToHex(GetValue().username)};{ToHex(GetValue().password)}";
+
+        private string ToHex(string text) => BitConverter.ToString(Encoding.Default.GetBytes(text)).Replace("-", "");
     }
 }

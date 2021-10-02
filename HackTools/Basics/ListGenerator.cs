@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace HackTools
@@ -32,7 +33,7 @@ namespace HackTools
                 Console.WriteLine(Printer.Fill("-", Console.BufferWidth));
 
                 // Actions
-                Printer.Print("&cyan; A: &white;Add item (top)\t&cyan;Esc: &white;Save and exit\n &cyan;Z: &white;Add item (bottom)\t&cyan;D: &white;Delete");
+                Printer.Print("&cyan; A: &white;Add item (top)\t&cyan;Esc: &white;Save and exit\t&cyan;E: &white;Export\n &cyan;Z: &white;Add item (bottom)\t&cyan;D: &white;Delete");
 
                 ConsoleKey key = Console.ReadKey().Key;
                 T newItem;
@@ -61,6 +62,7 @@ namespace HackTools
                         Printer.Print($"&red;\n Do you want to delete this item? (&white;{items[index].GetName()}&red;) ", newLine: false);
                         if (UIComponents.GetYesNo()) items.RemoveAt(index);
                         break;
+                    case ConsoleKey.E: Export(); break;
                     case ConsoleKey.Escape: return;
                 }
 
@@ -81,6 +83,30 @@ namespace HackTools
                     Printer.Print($"{(index == i ? "&red;" : "&white;")} {items[i].GetName()}", newLine: false);
                 }
             }
+
+            void Export()
+            {
+                string name;
+                do
+                {
+                    Console.Clear();
+                    Printer.Print("&cyan;\nNew file name (empty to exit): ", newLine: false);
+                    name = Console.ReadLine();
+                    if (name == "") return;
+                    if (!File.Exists($@"{ProgramInfo.programDir}/export/{name}.list"))
+                    {
+                        StringBuilder strBuilder = new StringBuilder();
+                        items.ForEach((i) => strBuilder.AppendLine(i.GetExportFormat()));
+                        File.WriteAllText($@"{ProgramInfo.programDir}/export/{name}.list",strBuilder.ToString());
+                        Console.Clear();
+                        Printer.Print("&green;The list has been exported to the &cyan;export&green; folder");
+                        UIComponents.PressAnyKey();
+                        return;
+                    }
+                    Printer.Print("&red;There is already a file with this name!");
+                    UIComponents.PressAnyKey();
+                } while (true);
+            }
         }
     }
 
@@ -92,6 +118,7 @@ namespace HackTools
         public void SetName(string name) => this.name = name;
         public T GetValue() => value;
         public void SetValue(T value) => this.value = value;
+        public virtual string GetExportFormat() => GetName();
         public abstract bool AskForValue();
     }
 }

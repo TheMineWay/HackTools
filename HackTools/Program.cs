@@ -41,6 +41,7 @@ namespace HackTools
             {
                 Directory.CreateDirectory(ProgramInfo.programDir);
                 Directory.CreateDirectory(@$"{ProgramInfo.programDir}\packages");
+                Directory.CreateDirectory(@$"{ProgramInfo.programDir}\export");
                 return true;
             } catch(Exception e)
             {
