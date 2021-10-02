@@ -61,14 +61,22 @@ namespace HackTools
             // Read packages index
             MavenIndexModel indexModel = MavenIndexModel.GetFromFile();
 
-            Menu<MavenPackageModel>.MenuItem[] items = indexModel.packages.Select((p) => new Menu<MavenPackageModel>.MenuItem($"{p.name} ({p.last_version}) {(p.IsAvailable() ? "" : "[DOWNLOAD]")}", p)).ToArray();
-            Menu<MavenPackageModel> menu = new Menu<MavenPackageModel>(title: "Available packages", items: items);
+            Menu<MavenPackageModel>.MenuItem[] items = getItems();
+            Menu<MavenPackageModel> menu = getMenu();
             do
             {
                 MavenPackageModel mavenPackage = menu.DisplayMenu();
                 if (mavenPackage == null) return;
-                mavenPackage.View();
+                bool downloaded = mavenPackage.View();
+                if (downloaded)
+                {
+                    items = getItems();
+                    menu = getMenu();
+                }
             } while (true);
+
+            Menu<MavenPackageModel>.MenuItem[] getItems() => indexModel.packages.Select((p) => new Menu<MavenPackageModel>.MenuItem($"{p.name} ({p.last_version}) {(p.IsAvailable() ? "" : "[DOWNLOAD]")}", p)).ToArray();
+            Menu<MavenPackageModel> getMenu() => new Menu<MavenPackageModel>(title: "Available packages", items: items);
         }
     }
 }

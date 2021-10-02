@@ -48,11 +48,11 @@ namespace HackTools
             }
         }
 
-        public void View()
+        public bool View()
         {
             if(IsAvailable())
             {
-
+                return false;
             } else
             {
                 Task download = Task.Run(Download);
@@ -62,6 +62,7 @@ namespace HackTools
                     loading.Print();
                     System.Threading.Thread.Sleep(200);
                 } while (!download.IsCompleted);
+                return true;
             }
         }
 
