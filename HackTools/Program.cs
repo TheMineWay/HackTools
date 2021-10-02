@@ -9,6 +9,7 @@ namespace HackTools
         static void Main(string[] args)
         {
             Console.Title = "Hack Tools - By TheMineWay";
+            Console.ForegroundColor = ConsoleColor.White;
 
             if (Console.WindowWidth >= 76)
             {

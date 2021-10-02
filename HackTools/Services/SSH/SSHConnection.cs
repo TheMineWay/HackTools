@@ -28,7 +28,7 @@ namespace HackTools
             this.ip = ip;
         }
 
-        public bool Connect()
+        public bool Connect(bool displayUI = true)
         {
             try
             {
@@ -38,7 +38,8 @@ namespace HackTools
                 return true;
             } catch (Exception e)
             {
-                UIComponents.Error($"Cannot connect to {ip} with:\n\tUsername: {username}\n\tPassword: {Printer.Fill("*",password.Length)}");
+                if(displayUI) UIComponents.Error($"Cannot connect to {ip} with:\n\tUsername: {username}\n\tPassword: {Printer.Fill("*",password.Length)}");
+                client.Disconnect();
                 return false;
             }
         }

