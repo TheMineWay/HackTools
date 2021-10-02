@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace HackTools
 {
@@ -8,7 +9,7 @@ namespace HackTools
     {
         public Menu(MenuItem[] items, string title)
         {
-            this.items = items;
+            virtualItems = items;
             this.title = title;
             cursor = "$";
         }
@@ -16,7 +17,8 @@ namespace HackTools
         string cursor;
         int perPage = 10; // Lines per page
         public string title;
-        private MenuItem[] items;
+        private MenuItem[] virtualItems;
+        private MenuItem[] items => virtualItems.Where((e) => e.enabled).ToArray();
         int line = 0;
 
         // Behaviour
@@ -56,6 +58,7 @@ namespace HackTools
                 int c = perPage * (int)(line / perPage);
                 foreach(MenuItem item in currentItems)
                 {
+                    if (!item.enabled) continue;
                     if (c == line) Printer.Print($"&red;{cursor} ", newLine: false);
                     else Console.Write(Printer.Fill(" ", cursor.Length + 1));
                     Console.WriteLine(item.name);
@@ -72,12 +75,15 @@ namespace HackTools
 
         public class MenuItem
         {
-            public MenuItem(string name, T value)
+            public MenuItem(string name, T value, bool enabled = true)
             {
                 _name = name;
                 _value = value;
+                _enabled = enabled;
             }
 
+            private bool _enabled;
+            public bool enabled => _enabled;
             private string _name;
             public string name => _name;
             private T _value;
