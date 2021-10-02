@@ -14,7 +14,7 @@ namespace HackTools
             dots
         }
         public static Mode mode = Mode.dots;
-        string title;
+        public string title;
         public LoadingUI(string title)
         {
             this.title = title;

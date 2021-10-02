@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Newtonsoft.Json;
 using System.IO;
 using System.Threading.Tasks;
-using System.Net;
 
 namespace HackTools
 {
@@ -74,9 +71,7 @@ namespace HackTools
         public void Download()
         {
             Directory.CreateDirectory($@"{ProgramInfo.programDir}/packages/{name}");
-
             Networker.DownloadToFile($"{url}/v_info.json", $@"{ProgramInfo.programDir}/packages/{name}/package.info.json");
-
             Networker.DownloadToFile($"{url}/{MavenPackageInfo.GetFromFile(name).datafile}", $@"{ProgramInfo.programDir}/packages/{name}/{MavenPackageInfo.GetFromFile(name).datafile}");
         }
     }
@@ -89,6 +84,7 @@ namespace HackTools
         public string datafile;
         public string description;
     }
+    [Serializable]
     class MavenPackageDetailsModel // package_info.json
     {
         public string author;

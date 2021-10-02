@@ -21,5 +21,17 @@ namespace HackTools
 
             return ips.ToArray();
         }
+
+        public static long[] GetRangeAsLong(string from, string to)
+        {
+            long fromIp = (long)(uint)IPAddress.NetworkToHostOrder((int)IPAddress.Parse(from).Address);
+            long toIp = (long)(uint)IPAddress.NetworkToHostOrder((int)IPAddress.Parse(to).Address);
+
+            List<long> ips = new List<long>();
+
+            for (long i = fromIp; i <= toIp; i++) ips.Add(i);
+
+            return ips.ToArray();
+        }
     }
 }

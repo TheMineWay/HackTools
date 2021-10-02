@@ -12,6 +12,7 @@ namespace HackTools
         public string name;
         public string ip;
         public string username, password;
+        public DateTime connected;
 
         SshClient client;
 
@@ -32,6 +33,7 @@ namespace HackTools
             try
             {
                 client = new SshClient(ip, username, password);
+                connected = DateTime.Now;
                 client.Connect();
                 return true;
             } catch (Exception e)

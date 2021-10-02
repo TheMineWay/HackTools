@@ -88,7 +88,7 @@ namespace HackTools
     {
         protected string name = "";
         protected T value;
-        public string GetName() => name;
+        public virtual string GetName() => name;
         public void SetName(string name) => this.name = name;
         public T GetValue() => value;
         public void SetValue(T value) => this.value = value;
