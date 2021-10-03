@@ -20,8 +20,36 @@ namespace HackTools
             FileSystemInfo fsi = GetElement(startPath);
             return fsi == null ? null : new FileInfo(fsi.FullName);
         }
+        public static DirectoryInfo DirectoryBrowser(DirectoryInfo startAt = null)
+        {
+            DirectoryInfo startPath = startAt == null ? new DirectoryInfo(Directory.GetCurrentDirectory()) : startAt;
+            FileSystemInfo fsi = GetElement(startPath, canSelectFolders: true, canSelectFiles: false);
+            return fsi == null ? null : new DirectoryInfo(fsi.FullName);
+        }
 
-        private static FileSystemInfo GetElement(DirectoryInfo directory, bool displayFiles = true, bool canSelectFolders = false)
+        public static FileInfo NewFileBrowser(DirectoryInfo startAt = null)
+        {
+            DirectoryInfo startPath = startAt == null ? new DirectoryInfo(Directory.GetCurrentDirectory()) : startAt;
+            do
+            {
+                FileSystemInfo fsi = GetElement(startPath, canSelectFolders: true, canSelectFiles: false);
+                if (fsi == null) return null;
+
+                Printer.Print("&cyan;Name for the new file (empty to exit): ");
+                string name = Console.ReadLine();
+                if (name == "") return null;
+                DirectoryInfo dir = new DirectoryInfo(fsi.FullName);
+                if (dir.GetFiles().Any((f) => f.Name == name))
+                {
+                    UIComponents.Error($"There is already a file using the name \"{name}\".", clear: true);
+                    continue;
+                }
+
+                return new FileInfo(dir.FullName + @"\" + name);
+            } while (true);
+        }
+
+        private static FileSystemInfo GetElement(DirectoryInfo directory, bool displayFiles = true, bool canSelectFolders = false, bool canSelectFiles = false)
         {
             DirectoryInfo current = directory;
             List<IOItem> IOItems = new List<IOItem>();
@@ -74,6 +102,7 @@ namespace HackTools
                     case ConsoleKey.DownArrow: selected++; break;
                     case ConsoleKey.Enter:
                         if (selectedItem == null) break;
+                        if (!selectedItem.isDirectory && !canSelectFiles) break;
                         if (selectedItem.isDirectory)
                         {
                             current = new DirectoryInfo(selectedItem.fileSystemInfo.FullName);
@@ -83,7 +112,9 @@ namespace HackTools
                         Console.Clear();
                         return selectedItem.fileSystemInfo;
                     case ConsoleKey.S:
+                        if (selectedItem == null) break;
                         if (selectedItem.isDirectory && !canSelectFolders) break;
+                        if (!selectedItem.isDirectory && !canSelectFiles) break;
                         Console.Clear();
                         return selectedItem.fileSystemInfo;
                         break;

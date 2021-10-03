@@ -84,53 +84,47 @@ namespace HackTools
                     Printer.Print($"{(index == i ? "&red;" : "&white;")} {items[i].GetName()}", newLine: false);
                 }
             }
+        }
+        public void Export(FileInfo toFile = null)
+        {
+            FileInfo to = toFile == null ? IOWorker.NewFileBrowser() : toFile;
+            if (to == null) return;
 
-            void Export()
+            Console.Clear();
+
+            // Build string
+            StringBuilder strBuilder = new StringBuilder();
+            items.ForEach((i) => strBuilder.AppendLine(i.GetExportFormat()));
+
+            // Write
+            File.WriteAllText(to.FullName, strBuilder.ToString());
+
+            // Exported
+            Console.Clear();
+            Printer.Print($"&green;The list has been exported => &white;{to.FullName}");
+            UIComponents.PressAnyKey();
+        }
+        public void Import(FileInfo fromFile = null)
+        {
+            FileInfo file = fromFile == null ? IOWorker.FileBrowser() : fromFile;
+            if (file == null) return;
+
+            if (items.Count > 0)
             {
-                string name;
-                do
-                {
-                    Console.Clear();
-                    Printer.Print("&cyan;\nNew file name (empty to exit): ", newLine: false);
-                    name = Console.ReadLine();
-                    if (name == "") return;
-                    if (!File.Exists($@"{ProgramInfo.programDir}/export/{name}.list"))
-                    {
-                        StringBuilder strBuilder = new StringBuilder();
-                        items.ForEach((i) => strBuilder.AppendLine(i.GetExportFormat()));
-                        File.WriteAllText($@"{ProgramInfo.programDir}/export/{name}.list",strBuilder.ToString());
-                        Console.Clear();
-                        Printer.Print("&green;The list has been exported to the &cyan;export&green; folder");
-                        UIComponents.PressAnyKey();
-                        return;
-                    }
-                    Printer.Print("&red;There is already a file with this name!");
-                    UIComponents.PressAnyKey();
-                } while (true);
+                Printer.Print("&cyan;[?] Do you want to override the existing items? ");
+                if (UIComponents.GetYesNo()) Clear();
             }
 
-            void Import()
+            FileStream fs = file.OpenRead();
+            StreamReader sr = new StreamReader(fs);
+            while (sr.Peek() >= 0)
             {
-                FileInfo file = IOWorker.FileBrowser();
-                if (file == null) return;
-
-                if (items.Count > 0)
-                {
-                    Printer.Print("&cyan;[?] Do you want to override the existing items? ");
-                    if (UIComponents.GetYesNo()) Clear();
-                }
-
-                FileStream fs = file.OpenRead();
-                StreamReader sr = new StreamReader(fs);
-                while(sr.Peek() >= 0)
-                {
-                    T t = new T();
-                    if (!t.Import(sr.ReadLine())) continue;
-                    Add(t);
-                }
-                sr.Close();
-                fs.Close();
+                T t = new T();
+                if (!t.Import(sr.ReadLine())) continue;
+                Add(t);
             }
+            sr.Close();
+            fs.Close();
         }
     }
 
