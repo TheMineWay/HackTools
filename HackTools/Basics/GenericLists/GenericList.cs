@@ -61,8 +61,18 @@ namespace HackTools
     {
         public override bool AskForValue() => false;
         public override string GetName() => $"{GetValue().ip} | {GetValue().username} | {GetValue().password}";
-        public override string GetExportFormat() => $"{ToHex(GetValue().ip)};{ToHex(GetValue().username)};{ToHex(GetValue().password)}";
-
-        private string ToHex(string text) => BitConverter.ToString(Encoding.Default.GetBytes(text)).Replace("-", "");
+        public override string GetExportFormat() => $"{Encoders.ToBase64(GetValue().ip)};{Encoders.ToBase64(GetValue().username)};{Encoders.ToBase64(GetValue().password)}";
+        public override bool Import(string line)
+        {
+            try
+            {
+                string[] cells = line.Split(";");
+                SetValue(new SSHConnection(Encoders.FromBase64(cells[1]), Encoders.FromBase64(cells[2]), Encoders.FromBase64(cells[0])));
+                return true;
+            } catch(Exception e)
+            {
+                return false;
+            }
+        }
     }
 }

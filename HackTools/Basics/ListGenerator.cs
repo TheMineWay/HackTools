@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 namespace HackTools
 {
@@ -107,6 +108,29 @@ namespace HackTools
                     UIComponents.PressAnyKey();
                 } while (true);
             }
+
+            void Import()
+            {
+                FileInfo file = IOWorker.FileBrowser();
+                if (file == null) return;
+
+                if (items.Count > 0)
+                {
+                    Printer.Print("&cyan;[?] Do you want to override the existing items? ");
+                    if (UIComponents.GetYesNo()) Clear();
+                }
+
+                FileStream fs = file.OpenRead();
+                StreamReader sr = new StreamReader(fs);
+                while(sr.Peek() >= 0)
+                {
+                    T t = new T();
+                    if (!t.Import(sr.ReadLine())) continue;
+                    Add(t);
+                }
+                sr.Close();
+                fs.Close();
+            }
         }
     }
 
@@ -119,6 +143,7 @@ namespace HackTools
         public T GetValue() => value;
         public void SetValue(T value) => this.value = value;
         public virtual string GetExportFormat() => GetName();
+        public virtual bool Import(string line) => false;
         public abstract bool AskForValue();
     }
 }

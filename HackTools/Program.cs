@@ -23,6 +23,7 @@ namespace HackTools
             if (!GenerateBaseFiles()) return;
             Menu<ScreenOption>.MenuItem[] items = new Menu<ScreenOption>.MenuItem[] {
                 new Menu<ScreenOption>.MenuItem("Available tools", new StartMenuScreen()),
+                new Menu<ScreenOption>.MenuItem("Generic importer", new GenericImporterScreen()),
                 new Menu<ScreenOption>.MenuItem("Package manager", new PackagesScreen()),
                 new Menu<ScreenOption>.MenuItem("Program info", new InfoScreen())
             };
