@@ -17,7 +17,7 @@ namespace HackTools
         public static FileInfo FileBrowser(DirectoryInfo startAt = null)
         {
             DirectoryInfo startPath = startAt == null ? new DirectoryInfo(Directory.GetCurrentDirectory()) : startAt;
-            FileSystemInfo fsi = GetElement(startPath);
+            FileSystemInfo fsi = GetElement(startPath, canSelectFiles: true);
             return fsi == null ? null : new FileInfo(fsi.FullName);
         }
         public static DirectoryInfo DirectoryBrowser(DirectoryInfo startAt = null)
@@ -35,9 +35,13 @@ namespace HackTools
                 FileSystemInfo fsi = GetElement(startPath, canSelectFolders: true, canSelectFiles: false);
                 if (fsi == null) return null;
 
-                Printer.Print("&cyan;Name for the new file (empty to exit): ");
+                Printer.Print("&cyan;Name for the new file (empty to exit): ", newLine: false);
                 string name = Console.ReadLine();
-                if (name == "") return null;
+                if (name == "")
+                {
+                    startPath = new DirectoryInfo(fsi.FullName).Parent;
+                    continue;
+                }
                 DirectoryInfo dir = new DirectoryInfo(fsi.FullName);
                 if (dir.GetFiles().Any((f) => f.Name == name))
                 {

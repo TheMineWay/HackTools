@@ -30,8 +30,14 @@ namespace HackTools
                 {
                     case ListType.SSHCredentials:
                         ListGenerator<SSHConnectionsList, SSHConnection> listGenerator = new ListGenerator<SSHConnectionsList, SSHConnection>();
-                        
-                        listGenerator.Modify();
+                        try
+                        {
+                            listGenerator.Import(file);
+                            listGenerator.Modify();
+                        } catch(Exception e)
+                        {
+                            UIComponents.Error("An error has occurred while reading the file. Maybe the file does not contains a \"SSHCredentials list\".");
+                        }
                         break;
                     default: return;
                 }
