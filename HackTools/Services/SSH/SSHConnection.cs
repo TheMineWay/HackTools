@@ -30,6 +30,8 @@ namespace HackTools
             this.ip = ip;
         }
 
+        public ShellStream GetStream() => client.CreateShellStream("xterm", 80, 24, 800, 600, 1024);
+
         public bool Connect(bool displayUI = true)
         {
             try
@@ -108,9 +110,11 @@ namespace HackTools
             } while (true);
         }
 
-        public string Run(string command)
+        public string Run(string command, bool display)
         {
+            if (command == "") return "";
             if (client == null) return "[!] No connection";
+            if (!client.IsConnected) client.Connect();
             SshCommand com = client.CreateCommand(command);
             try
             {
@@ -119,9 +123,38 @@ namespace HackTools
                 return com.Result;
             } catch(Exception e)
             {
-                Printer.Print("&red; Missing client");
+                Printer.Print($"&red;{e.Message}");
                 return "";
             }
+        }
+
+        public void Run(string[] commands)
+        {
+            if (client == null) return;
+            if (!client.IsConnected) client.Connect();
+
+            ShellStream stream = GetStream();
+
+            foreach(string command in commands)
+            {
+                if (command == "") continue;
+                stream.WriteLine(command);
+                string answer = ReadStream(stream);
+                int index = answer.IndexOf(System.Environment.NewLine);
+                answer = answer.Substring(index + System.Environment.NewLine.Length);
+                Console.WriteLine(answer.Trim());
+            }
+        }
+
+        private static string ReadStream(ShellStream stream)
+        {
+            StringBuilder result = new StringBuilder();
+
+            string line;
+            while ((line = stream.ReadLine()) != "this-is-the-end")
+                result.AppendLine(line);
+
+            return result.ToString();
         }
     }
 }

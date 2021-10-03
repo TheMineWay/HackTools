@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading;
+using Renci.SshNet;
 
 namespace HackTools
 {
@@ -59,6 +60,8 @@ namespace HackTools
             if (!connection.Connect()) return;
             Console.Clear();
             Console.Title = $"[SSH]: Connected to {connection.ip}";
+            ShellStream shellStream = connection.GetStream();
+            Console.WriteLine(shellStream.ReadLine());
             do
             {
                 string command = Console.ReadLine();
@@ -66,7 +69,7 @@ namespace HackTools
                 else if (command == "exit") break;
                 else
                 {
-                    string result = connection.Run(command);
+                    string result = connection.Run(command, false);
                     Console.WriteLine(result);
                 }
             } while (true);
