@@ -36,7 +36,7 @@ namespace HackTools
                         foreach (SSHConnection connection in connections)
                         {
                             connection.Connect(false);
-                            connection.Run(command, false);
+                            string results = connection.Run(new string[] { command });
                         }
 
                         Printer.Print("&cyan;Display all results?");

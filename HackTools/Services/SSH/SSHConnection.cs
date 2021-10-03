@@ -105,45 +105,29 @@ namespace HackTools
                 } else
                 {
                     Console.Clear();
-                    Printer.Print("&red; [!] The IP check has failed");
+                    Printer.Print("&red;[!] The IP check has failed");
                 }
             } while (true);
         }
 
-        public string Run(string command, bool display)
+        public string Run(string[] commands)
         {
-            if (command == "") return "";
-            if (client == null) return "[!] No connection";
-            if (!client.IsConnected) client.Connect();
-            SshCommand com = client.CreateCommand(command);
-            try
-            {
-                com.Execute();
-                results.Add(com.Result);
-                return com.Result;
-            } catch(Exception e)
-            {
-                Printer.Print($"&red;{e.Message}");
-                return "";
-            }
-        }
-
-        public void Run(string[] commands)
-        {
-            if (client == null) return;
+            if (client == null) return "[!] No client";
             if (!client.IsConnected) client.Connect();
 
             ShellStream stream = GetStream();
+            StringBuilder responseBuilder = new StringBuilder();
 
             foreach(string command in commands)
             {
                 if (command == "") continue;
                 stream.WriteLine(command);
                 string answer = ReadStream(stream);
-                int index = answer.IndexOf(System.Environment.NewLine);
-                answer = answer.Substring(index + System.Environment.NewLine.Length);
-                Console.WriteLine(answer.Trim());
+                int index = answer.IndexOf(Environment.NewLine);
+                answer = answer.Substring(index + Environment.NewLine.Length);
+                responseBuilder.AppendLine(answer.Trim());
             }
+            return responseBuilder.ToString();
         }
 
         private static string ReadStream(ShellStream stream)
@@ -152,7 +136,9 @@ namespace HackTools
 
             string line;
             while ((line = stream.ReadLine()) != "this-is-the-end")
+            {
                 result.AppendLine(line);
+            }
 
             return result.ToString();
         }

@@ -69,7 +69,7 @@ namespace HackTools
                 else if (command == "exit") break;
                 else
                 {
-                    string result = connection.Run(command, false);
+                    string result = connection.Run(new string[] { command });
                     Console.WriteLine(result);
                 }
             } while (true);
