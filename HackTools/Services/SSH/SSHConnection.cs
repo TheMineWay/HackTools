@@ -13,6 +13,8 @@ namespace HackTools
         public string ip;
         public string username, password;
         public DateTime connected;
+        private List<string> results = new List<string>();
+        public string[] Results => results.ToArray();
 
         SshClient client;
 
@@ -113,6 +115,7 @@ namespace HackTools
             try
             {
                 com.Execute();
+                results.Add(com.Result);
                 return com.Result;
             } catch(Exception e)
             {

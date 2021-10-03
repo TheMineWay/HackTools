@@ -22,7 +22,8 @@ namespace HackTools
             editUsernames,
             editPasswords,
             generateRange,
-            tryAccessByRange
+            tryAccessByRange,
+            openConnectionsStack
         }
         enum AttackResultOptions
         {
@@ -84,7 +85,8 @@ namespace HackTools
                 new Menu<AttackOptions>.MenuItem("Generate targets range (by IP)", AttackOptions.generateRange),
                 new Menu<AttackOptions>.MenuItem("Edit usernames list", AttackOptions.editUsernames),
                 new Menu<AttackOptions>.MenuItem("Edit passwords list", AttackOptions.editPasswords),
-                new Menu<AttackOptions>.MenuItem("Try access by range", AttackOptions.tryAccessByRange)
+                new Menu<AttackOptions>.MenuItem("Try access by range", AttackOptions.tryAccessByRange),
+                new Menu<AttackOptions>.MenuItem("Open connections stack", AttackOptions.openConnectionsStack)
             };
             Menu<AttackOptions> menu = new Menu<AttackOptions>(title: "Targets", items: items);
             do
@@ -97,6 +99,16 @@ namespace HackTools
                     case AttackOptions.tryAccessByRange: TryAccessByRange(); break;
                     case AttackOptions.editUsernames: usernames.Modify(); break;
                     case AttackOptions.editPasswords: passwords.Modify(); break;
+                    case AttackOptions.openConnectionsStack:
+                        SSHConnection[] connections = TryCombinations();
+                        if (connections.Length <= 0)
+                        {
+                            UIComponents.Error("the program could not connect to any device using the specified credentials");
+                            break;
+                        }
+
+                        new SSHConnectionsStackScreen(connections).Open();
+                        break;
                     default:
                         targets.Clear();
                         GC.Collect(); // Forces to clear memory
@@ -138,7 +150,7 @@ namespace HackTools
                 } while (true);
             }
 
-            void TryAccessByRange()
+            SSHConnection[] TryCombinations()
             {
                 List<SSHConnection> connections = new List<SSHConnection>();
                 int current = 0;
@@ -147,7 +159,7 @@ namespace HackTools
                 CancellationTokenSource cancellationToken = new CancellationTokenSource();
                 Task loadingTask = Task.Run(() => {
                     LoadingUI loading = new LoadingUI("");
-                    while(true)
+                    while (true)
                     {
                         if (cancellationToken.IsCancellationRequested) return;
                         loading.title = $"Trying {current}/{targets.GetItems().Count()} ({currentIp})";
@@ -157,7 +169,7 @@ namespace HackTools
                 }, cancellationToken.Token);
 
                 // Try all combinations
-                foreach(IPAndNamesList ip in targets.GetItems())
+                foreach (IPAndNamesList ip in targets.GetItems())
                 {
                     current++;
                     currentIp = ip.GetName();
@@ -169,7 +181,7 @@ namespace HackTools
                     SSHConnection connection = null;
                     foreach (string username in usernames.GetItems().Select((u) => u.GetValue()).ToArray())
                     {
-                        foreach(string password in passwords.GetItems().Select((p) => p.GetValue()).ToArray())
+                        foreach (string password in passwords.GetItems().Select((p) => p.GetValue()).ToArray())
                         {
                             connection = new SSHConnection(username, password, currentIp);
                             if (connection.Connect(displayUI: false)) connected = true;
@@ -179,13 +191,18 @@ namespace HackTools
 
                     if (connected && connection != null) connections.Add(connection);
                 }
-
                 cancellationToken.Cancel();
+                return connections.ToArray();
+            }
+
+            void TryAccessByRange()
+            {
+                SSHConnection[] connections = TryCombinations();
                 Console.ForegroundColor = ConsoleColor.White;
 
                 // Once it tried all connections
 
-                if(connections.Count <= 0)
+                if(connections.Length <= 0)
                 {
                     Console.Clear();
                     Printer.Print("&red;The program was unable to connect to any device via SSH (using the specified targets, usernames and passwords)");

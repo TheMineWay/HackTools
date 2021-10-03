@@ -5,6 +5,28 @@ using System.Text;
 
 namespace HackTools
 {
+    class StringList : ListItem<string>
+    {
+        public override bool AskForValue()
+        {
+            Printer.Print("&cyan;\nNew line:&white; ", newLine: false);
+            string line = Console.ReadLine();
+            if (line.Length > 0)
+            {
+                SetValue(line);
+                SetName(line);
+                return true;
+            }
+            return false;
+        }
+
+        public override bool Import(string line)
+        {
+            SetValue(line);
+            return true;
+        }
+        public override string GetName() => GetValue();
+    }
     class IPAndNamesList : ListItem<long>
     {
         public override bool AskForValue()
