@@ -37,7 +37,8 @@ namespace HackTools
             try
             {
                 if (!File.Exists($@"{ProgramInfo.programDir}/packages/{name}/package.info.json")) return false;
-                if (!File.Exists($@"{ProgramInfo.programDir}/packages/{name}/{MavenPackageInfo.GetFromFile(name).datafile}")) return false;
+                foreach(string datafile in MavenPackageInfo.GetFromFile(name).datafiles)
+                    if (!File.Exists($@"{ProgramInfo.programDir}/packages/{name}/{datafile}")) return false;
                 return true;
             } catch(Exception e)
             {
@@ -72,7 +73,10 @@ namespace HackTools
         {
             Directory.CreateDirectory($@"{ProgramInfo.programDir}/packages/{name}");
             Networker.DownloadToFile($"{url}/v_info.json", $@"{ProgramInfo.programDir}/packages/{name}/package.info.json");
-            Networker.DownloadToFile($"{url}/{MavenPackageInfo.GetFromFile(name).datafile}", $@"{ProgramInfo.programDir}/packages/{name}/{MavenPackageInfo.GetFromFile(name).datafile}");
+            foreach(string datafile in MavenPackageInfo.GetFromFile(name).datafiles)
+            {
+                Networker.DownloadToFile($"{url}/{datafile}", $@"{ProgramInfo.programDir}/packages/{name}/{datafile}");
+            }
         }
     }
     [Serializable]
@@ -81,7 +85,7 @@ namespace HackTools
         public static MavenPackageInfo GetFromFile(string name) => JsonConvert.DeserializeObject<MavenPackageInfo>(File.ReadAllText($@"{ProgramInfo.programDir}/packages/{name}/package.info.json"));
 
         public string datatype;
-        public string datafile;
+        public string[] datafiles;
         public string description;
     }
     [Serializable]
