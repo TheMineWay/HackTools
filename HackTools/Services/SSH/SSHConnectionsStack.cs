@@ -10,7 +10,8 @@ namespace HackTools
         enum Options
         {
             exit,
-            runCommand
+            runCommand,
+            poweroff
         }
         SSHConnection[] connections;
         public SSHConnectionsStackScreen(SSHConnection[] connections)
@@ -21,7 +22,8 @@ namespace HackTools
         {
             Menu<Options>.MenuItem[] items = new Menu<Options>.MenuItem[]
             {
-                new Menu<Options>.MenuItem("Run command on all devices", Options.runCommand)
+                new Menu<Options>.MenuItem("Run command on all devices", Options.runCommand),
+                new Menu<Options>.MenuItem("Shutdown all devices", Options.poweroff)
             };
             Menu<Options> menu = new Menu<Options>(title: "Operations", items: items);
             do
@@ -51,6 +53,13 @@ namespace HackTools
                                     Console.WriteLine(connection.Results[connection.Results.Length - 1]);
                             }
                             UIComponents.PressAnyKey();
+                        }
+                        break;
+                    case Options.poweroff:
+                        foreach (SSHConnection connection in connections)
+                        {
+                            connection.Connect(false);
+                            string results = connection.Run(new string[] { "sudo poweroff",connection.password },300);
                         }
                         break;
                     default:

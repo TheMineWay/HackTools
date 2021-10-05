@@ -29,8 +29,12 @@ namespace HackTools
             this.password = password;
             this.ip = ip;
         }
-
-        public ShellStream GetStream() => client.CreateShellStream("xterm", 80, 24, 800, 600, 1024);
+        ShellStream stream;
+        public ShellStream GetStream()
+        {
+            if (stream == null) stream = client.CreateShellStream("xterm", 80, 24, 800, 600, 1024);
+            return stream;
+        }
 
         public bool Connect(bool displayUI = true)
         {
@@ -110,7 +114,7 @@ namespace HackTools
             } while (true);
         }
 
-        public string Run(string[] commands)
+        public string Run(string[] commands, int delay = 0)
         {
             if (client == null) return "[!] No client";
             if (!client.IsConnected) client.Connect();
@@ -126,19 +130,24 @@ namespace HackTools
                 int index = answer.IndexOf(Environment.NewLine);
                 answer = answer.Substring(index + Environment.NewLine.Length);
                 responseBuilder.AppendLine(answer.Trim());
+                System.Threading.Thread.Sleep(delay);
             }
             return responseBuilder.ToString();
-        }
+        }       
 
         private static string ReadStream(ShellStream stream)
         {
             StringBuilder result = new StringBuilder();
 
             string line;
-            while ((line = stream.ReadLine()) != "this-is-the-end")
+            int empty = 0;
+            do
             {
+                line = stream.ReadLine();
                 result.AppendLine(line);
-            }
+                if (line.ToLower().Contains("password:")) break;
+                if (line == "") break;
+            } while (true);
 
             return result.ToString();
         }
